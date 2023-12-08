@@ -11,10 +11,14 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dynamic = ["version"]
-dependencies = ["pandas"]
+dependencies = [
+    "maturin==1.4.0",
+    "pandas",
+    "tqdm"
+]
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
-
+python-source = "src_python"
 
 
