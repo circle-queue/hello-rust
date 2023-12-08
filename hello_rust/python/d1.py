@@ -1,4 +1,58 @@
-data = [
+def solve_task_1(input: list[str]) -> str:
+    new_data = []
+    for i in input:
+        new = [c for c in i if c.isdigit()]
+        new_data.append(int(new[0] + new[-1]))
+    return str(sum(new_data))
+
+
+def solve_task_2(input: list[str]) -> str:
+    d = dict(
+        oneight=18,
+        oneightwone=1821,
+        oneightwo=182,
+        oneighthree=183,
+        twone=21,
+        nineight=98,
+        eightwone=821,
+        eightwo=82,
+        eighthree=83,
+        eight=8,
+        five=5,
+        four=4,
+        nine=9,
+        one=1,
+        seven=7,
+        six=6,
+        three=3,
+        two=2,
+    )
+
+    new_data = []
+    for i in input:
+        for k, v in d.items():
+            i = i.replace(k, str(v))
+        new = [c for c in i if c.isdigit()]
+        new_data.append(int(new[0] + new[-1]))
+    return str(sum(new_data))
+
+
+sample_input1 = [
+    "1abc2",
+    "pqr3stu8vwx",
+    "a1b2c3d4e5f",
+    "treb7uchet",
+]
+sample_input2 = [
+    "two1nine",
+    "eightwothree",
+    "abcone2threexyz",
+    "xtwone3four",
+    "4nineeightseven2",
+    "zoneight234",
+    "7pqrstsixteen",
+]
+full_input1 = full_input2 = [
     "99lbqpxzzlbtvkmfrvrnmcxttseven",
     "q7cnfslbtpkvseven",
     "6threezlljtzcr1sdjkthree4cx",
@@ -1000,32 +1054,3 @@ data = [
     "3eightlrrlgck967",
     "xcntwone4633sixmkm1nine",
 ]
-
-d = dict(
-    oneight = 18,
-    oneightwone = 1821,
-    oneightwo = 182,
-    oneighthree = 183,
-    twone = 21,
-    nineight = 98,
-    eightwone = 821,
-    eightwo = 82,
-    eighthree = 83,
-    eight = 8,
-    five = 5,
-    four = 4,
-    nine = 9,
-    one = 1,
-    seven = 7,
-    six = 6,
-    three = 3,
-    two = 2,
-)
-
-new_data = []
-for i in data:
-    for k, v in d.items():
-        i = i.replace(k, str(v))
-    new = [c for c in i if c.isdigit()]
-    new_data.append(int(new[0] + new[-1]))
-sum(new_data)
