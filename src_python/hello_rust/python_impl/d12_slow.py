@@ -36,44 +36,139 @@ def solve1(input: list[str]) -> str:
         expected = get_targets(line)
         return expected == found_here
 
-    arrangements = sum(brute_force_arrangements(list(line)) for line in input)
+    arrangements = 0
+    for line in input:
+        arrangements += brute_force_arrangements(list(line))
     return str(arrangements)
 
 
-def solve2(input: list[str]) -> str:
-    @functools.cache
-    def dp(springs: tuple[str], targets: tuple[int]):
-        """
-        Keep removing letters from spring, left to right
-        At each step, we can either try to skip this letter or pick it as the left-most target
-        """
-        if not springs or not targets:
-            return (not targets) and ("#" not in springs)
+@functools.cache
+def segment_to_patterns(segment: str) -> Counter[str]:
+    segment = list(segment)
 
-        S = springs[0]
-        T = targets[0]
+    counts = Counter()
+    for i, char in enumerate(segment):
+        if char == "?":
+            segment[i] = "#"
+            counts.update(segment_to_patterns("".join(segment)))
+            segment[i] = "."
+            counts.update(segment_to_patterns("".join(segment)))
+            return counts
 
-        arrangements = 0
-        if S in ".?":  # Try skipping this
-            arrangements += dp(springs[1:], targets)
+    # We didnt find any ?s, so count contiguous groups of #s
+    found_here = "".join(f"{len(seq)}," for seq in re.findall(r"#+", "".join(segment)))
+    counts[found_here] += 1
+    return counts
 
-        if (  # Try picking this
-            S in "#?"
-            and set(springs[:T]).issubset({"#", "?"})  # asset types
-            and len(springs[:T]) == T  # assert size
-            and springs[T : T + 1] != ("#",)  # limit size
-        ):
-            arrangements += dp(springs[T + 1 :], targets[1:])
-        return arrangements
+
+def brute_force_fits(segment: str, targets_str: str) -> Counter[Range]:
+    """
+    segment = "???"
+    targets_str = "1,1,3"
+    brute_force_fits(segment, targets_str)
+    """
+    pattern_counts = segment_to_patterns(segment)
+    idx_counts = Counter()
+    for pattern, count in pattern_counts.items():
+        for overlap in re.finditer(f"(?={pattern})", targets_str):
+            s = overlap.start()
+            # print(segment, found_here, s, s + len(found_here))
+            idx_counts[Range(s, s + len(pattern))] += count
+
+        # print(pattern)
+        suffix = pattern.strip(",")
+        if targets_str.endswith(suffix):
+            idx_counts[Range(len(targets_str) - len(suffix), len(targets_str))] += count
+
+    return idx_counts
+
+
+def brute_force_segments(
+    segment_matches: list[Counter[Range]],
+    segment_idx: int,
+    at_idx: int,
+    goal_idx: int,
+    targets_str: str,
+) -> list[Range]:
+    """
+    springs
+    target_str
+    brute_force_segments(segment_matches, at_idx, goal_idx)
+    """
+    if at_idx == goal_idx:
+        return 1
+    if segment_idx == len(segment_matches):
+        return 0
 
     total = 0
-    for line in tqdm(input):
-        left, right = line.split()
-        springs = tuple("?".join([left] * 5))
-        targets = tuple(map(int, right.split(","))) * 5
-        total += dp(springs, targets)
+    for range_, count in segment_matches[segment_idx].items():
+        if range_.start == at_idx:
+            # print(
+            #     segment_idx,
+            #     f"match={targets_str[range_.start: range_.stop]!r}",
+            #     f"{range_ = }",
+            # )
+            total += count * brute_force_segments(
+                segment_matches, segment_idx + 1, range_.stop, goal_idx, targets_str
+            )
 
-    return str(total)
+    return total
+
+
+def solve2(input: list[str]) -> str:
+    """
+    We use divide and conquer.
+    We define a segment as a contiguous group of #s or ?s.
+    We preprocess each segment in isolation, and identify which parts of the targets it could match.
+        E.g. if the segment is "????", it could match
+            "1,1," in 3 ways: "#.#.", "#..#", ".#.#"
+            "1,2," in 1 way: "#.##"
+            "2,1," in 1 way: "##.#"
+            "3," in 2 ways: "###.", ".###"
+            "4," in 1 way: "####"
+        Instead of storing the parts it matches, we store the index range it maches.
+        Consider the target "1,1,2,1,1"
+            "1,1," matches the range [0, 2) and [3, 5), so we store Counter({range(0, 2): 1, range(3, 5): 1})
+            "1,2," matches the range [1, 3), so we store Counter({range(1, 3): 1})
+            "2,1," matches the range [2, 4), so we store Counter({range(2, 4): 1})
+            "3," does not match
+            "4," does not match
+    Now we have a list of segment matches
+    We want to find the # of ways to arrange them to match the targets.
+    We do this by setting an index to 0 and iterate through each segment
+    The segment must have a range matching the index, otherwise we break and try a new configuration
+        (We cannot skip, since that implies we add a non-matching value to the result)
+    If the segment matches, we:
+        1) set the range ending as the new index
+        2) multiply our current # of configuration with the segment count for that range
+    When we reach the end of all segments, we can add the # of configurations to the total
+
+    Test case 1:
+        ???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3
+
+    This ends up being too slow
+    """
+    total = 0
+
+    for line in tqdm(input):
+        l, r = line.split()
+
+        springs = "?".join([l] * 5)
+        targets_str = ",".join([r] * 5)
+
+        segment_matches = []
+        for segment in re.finditer(r"([#?]+)", springs):
+            segment = segment.group()
+            segment_matches.append(brute_force_fits(segment, targets_str))
+        # del springs # No longer needed
+
+        at_idx, segment_idx, goal_idx = 0, 0, len(targets_str)
+        n_config = brute_force_segments(
+            segment_matches, segment_idx, at_idx, goal_idx, targets_str
+        )
+        print(n_config)
+        total += n_config
+    return str()
 
 
 sample_input2 = sample_input1 = """???.### 1,1,3
@@ -1086,7 +1181,7 @@ full_input1 = full_input2 = """?#?##?#????.?..?? 9,1
 
 if __name__ == "__main__":
     input = sample_input1
-    input = full_input1
+    # input = full_input1
 
     # print(solve1(input))
     print(solve2(input))

@@ -14,7 +14,8 @@ dynamic = ["version"]
 dependencies = [
     "maturin==1.4.0",
     "pandas",
-    "tqdm"
+    "tqdm",
+    "pytest-xdist"
 ]
 
 [tool.maturin]
@@ -22,3 +23,6 @@ features = ["pyo3/extension-module"]
 python-source = "src_python"
 
 
+[tool.pytest.ini_options]
+addopts = "-n 2"
+testpaths = [ "tests" ]

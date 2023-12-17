@@ -30,3 +30,6 @@ PyO3 implements modules in a dynamic way, which is slightly messy. Sub-modules a
 [tool.maturin]
 python-source = "src_python"
 ```
+
+### Assumptions
+These solutions are not garenteed so solve every case as-is, and may need to be manually adjusted e.g. in case the solution is one of two possible solutions for day 10 pt 2. With more code this could be done automatically, but oh well.

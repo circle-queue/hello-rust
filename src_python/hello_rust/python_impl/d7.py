@@ -47,7 +47,7 @@ def evaluate_hand(cards, sol) -> tuple[int, int]:
 
 
 def solve1(input: list[str]) -> str:
-    hands_w_bids = [line.split() for line in x.split("\n")]
+    hands_w_bids = [line.split() for line in input]
     hands_w_bids.sort(key=lambda x: evaluate_hand(x[0], sol=1))  # Worst -> best
 
     total = 0
@@ -58,7 +58,7 @@ def solve1(input: list[str]) -> str:
 
 
 def solve2(input: list[str]) -> str:
-    hands_w_bids = [line.split() for line in x.split("\n")]
+    hands_w_bids = [line.split() for line in input]
     hands_w_bids.sort(key=lambda x: evaluate_hand(x[0], sol=2))  # Worst -> best
 
     total = 0

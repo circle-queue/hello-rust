@@ -1,7 +1,5 @@
-#![allow(dead_code)]
-
+#![allow(unused)]
 pub mod rust_impl;
-
 use pyo3::prelude::*;
 
 #[rustfmt::skip] #[pyfunction] fn d1_solve1(input: Vec<String>) -> PyResult<String> { Ok(rust_impl::d1::solve1(input)) }

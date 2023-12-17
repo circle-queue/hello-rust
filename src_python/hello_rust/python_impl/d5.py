@@ -1,33 +1,26 @@
 sample_input1 = sample_input2 = """seeds: 79 14 55 13
-
 seed-to-soil map:
 50 98 2
 52 50 48
-
 soil-to-fertilizer map:
 0 15 37
 37 52 2
 39 0 15
-
 fertilizer-to-water map:
 49 53 8
 0 11 42
 42 0 7
 57 7 4
-
 water-to-light map:
 88 18 7
 18 25 70
-
 light-to-temperature map:
 45 77 23
 81 45 19
 68 64 13
-
 temperature-to-humidity map:
 0 69 1
 1 0 69
-
 humidity-to-location map:
 60 56 37
 56 93 4""".splitlines(keepends=False)
@@ -47,10 +40,8 @@ class IntervalDict(dict):
 
     def __getitem__(self, key: int) -> int:
         for src_span, dst_span in self.items():
-            src_span = range(*src_span)
-            dst_span = range(*dst_span)
-            if key in src_span:
-                return dst_span.start + (key - src_span.start)
+            if key in range(*src_span):
+                return dst_span[0] + (key - src_span[0])
         return key
 
     def __setitem__(self, key: tuple, value: tuple):
@@ -75,14 +66,14 @@ def parse_input(input: list[str]) -> tuple[list[int], list[IntervalDict]]:
 
 
 def solve1(input: list[str]) -> str:
-    seeds, mappings = parse_input()
+    seeds, mappings = parse_input(input)
 
     out = []
     for value in seeds:
-        debug_path = [value]
+        # debug_path = [value]
         for mapping in mappings:
             value = mapping[value]
-            debug_path.append(value)
+            # debug_path.append(value)
         out.append(value)
         # print(debug_path)
     return str(min(out))
@@ -102,17 +93,17 @@ def solve2(input: list[str]) -> str:
             mapping[v] = k
 
     for value in range(max(seeds)):
-        debug_path = [value]
+        start_value = value
+        # debug_path = [value]
         for mapping in mappings:
             value = mapping[value]
-            debug_path.append(value)
+            # debug_path.append(value)
         # print(debug_path)
         if any(value in span for span in seed_spans):
-            return f"sol: {debug_path[0]}"
+            return str(start_value)
 
 
 full_input1 = full_input2 = """seeds: 104847962 3583832 1212568077 114894281 3890048781 333451605 1520059863 217361990 310308287 12785610 3492562455 292968049 1901414562 516150861 2474299950 152867148 3394639029 59690410 862612782 176128197
-
 seed-to-soil map:
 2023441036 2044296880 396074363
 2419515399 3839972576 454994720
@@ -130,7 +121,6 @@ seed-to-soil map:
 3190402256 1756282136 201256374
 1474923286 2460964438 441166185
 1233431450 958743033 18292543
-
 soil-to-fertilizer map:
 1479837493 1486696129 480988794
 3637384566 3730606485 267472485
@@ -145,7 +135,6 @@ soil-to-fertilizer map:
 991894599 0 174821741
 3416901681 2902018973 169271461
 3178456500 3998078970 238445181
-
 fertilizer-to-water map:
 4274676882 2765984054 20290414
 3642266392 2324011621 382224743
@@ -169,7 +158,6 @@ fertilizer-to-water map:
 756566914 0 152334204
 1304420652 4054564983 103204194
 1753141421 1591565829 223859024
-
 water-to-light map:
 139728365 0 27290780
 4161521920 2345099742 65970280
@@ -217,7 +205,6 @@ water-to-light map:
 4227492200 1949827562 59745244
 1915050765 4074976492 92755930
 2211629761 722818807 30932493
-
 light-to-temperature map:
 3741602262 2758947303 142653736
 628739598 2901601039 50811783
@@ -245,7 +232,6 @@ light-to-temperature map:
 265644560 162891745 32939618
 162891745 1229644244 102752815
 904704230 3170653120 79578289
-
 temperature-to-humidity map:
 671484955 1144907174 532089323
 1414132335 1960778188 125717021
@@ -269,7 +255,6 @@ temperature-to-humidity map:
 1539849356 2086495209 19563417
 2241606516 598391916 289072
 417196290 498932829 99459087
-
 humidity-to-location map:
 547577859 2546258172 54451455
 2564186976 3913248498 28610653

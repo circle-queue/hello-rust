@@ -73,8 +73,9 @@ def solve2(input: list[str]) -> str:
         z_cycles.append(GhostZCycle(z_time=first_z_time, cycle_len=len(cycle)))
 
     # Turns out you can just do LCM (least common multiple) of all the cycle lengths...
+    # https://www.reddit.com/r/adventofcode/comments/18df7px/2023_day_8_solutions/
     lcm_solution = math.lcm(*[c.cycle_len for c in z_cycles])
-    return lcm_solution
+    return str(lcm_solution)
 
     # This solves it in 1H
     heapq.heapify(z_cycles)

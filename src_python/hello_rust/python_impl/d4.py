@@ -8,7 +8,7 @@ Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11""".splitlines()
 
 
-def sol1(input: list[str]) -> str:
+def solve1(input: list[str]) -> str:
     worth = 0
     for line in input:
         winners, owned = line.split(": ")[-1].split(" | ")
@@ -22,7 +22,7 @@ def sol1(input: list[str]) -> str:
     return str(worth)
 
 
-def sol2(input: list[str]) -> str:
+def solve2(input: list[str]) -> str:
     copies = Counter()
     for line in input:
         card, line = line.split(": ")

@@ -1,8 +1,10 @@
+#![allow(unused)]
 pub mod rust_impl;
 
 fn main() {
     // For debugging in pure rust
-    use rust_impl::d3 as d;
+    #[allow(unused_variables)]
+    use rust_impl::d5 as d;
     let sample_input = true;
 
     // Evaluate task #1 and check result
@@ -14,9 +16,9 @@ fn main() {
     let sol1 = d::solve1(input1);
     println!("{sol1}");
     assert!(if sample_input {
-        sol1 == "8"
+        sol1 == "35"
     } else {
-        sol1 == "1867"
+        sol1 == "88151870"
     });
 
     // Evaluate task #2 and check result
@@ -28,8 +30,8 @@ fn main() {
     let sol2 = d::solve2(input2);
     println!("{sol2}");
     assert!(if sample_input {
-        sol2 == "2286"
+        sol2 == "46"
     } else {
-        sol2 == "84538"
+        sol2 == "2008785"
     });
 }
