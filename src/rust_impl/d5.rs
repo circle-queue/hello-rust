@@ -2,7 +2,7 @@ use core::ops::Range;
 use std::collections::HashMap;
 
 pub struct RangeMapping {
-    range_map: HashMap<Range<i32>, Range<i32>>,
+    range_map: HashMap<Range<i64>, Range<i64>>,
 }
 impl RangeMapping {
     pub fn new() -> RangeMapping {
@@ -11,7 +11,7 @@ impl RangeMapping {
         }
     }
 
-    pub fn get_at(&self, key: i32) -> i32 {
+    pub fn get_at(&self, key: i64) -> i64 {
         for (src, dst) in &self.range_map {
             if src.contains(&&key) {
                 return dst.start + (key - src.start);
@@ -20,17 +20,17 @@ impl RangeMapping {
         key
     }
 
-    pub fn insert(&mut self, src: Range<i32>, dst: Range<i32>) {
+    pub fn insert(&mut self, src: Range<i64>, dst: Range<i64>) {
         self.range_map.insert(src, dst);
     }
 }
 
-pub fn parse_input(input: Vec<String>) -> (Vec<i32>, Vec<RangeMapping>) {
+pub fn parse_input(input: Vec<String>) -> (Vec<i64>, Vec<RangeMapping>) {
     let seeds = input[0]
         .split_ascii_whitespace()
         .skip(1)
-        .map(|nums| nums.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
+        .map(|nums| nums.parse::<i64>().unwrap())
+        .collect::<Vec<i64>>();
 
     let mut mappings = Vec::new();
 
@@ -40,8 +40,8 @@ pub fn parse_input(input: Vec<String>) -> (Vec<i32>, Vec<RangeMapping>) {
         } else {
             if let [dst_start, src_start, span] = line
                 .split_ascii_whitespace()
-                .map(|c| c.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>()[..]
+                .map(|c| c.parse::<i64>().unwrap())
+                .collect::<Vec<i64>>()[..]
             {
                 let mut last_mapping = mappings.pop().unwrap();
                 last_mapping.insert(src_start..(src_start + span), dst_start..(dst_start + span));
@@ -77,10 +77,10 @@ pub fn solve2(input: Vec<String>) -> String {
 
     let (even, odd): (Vec<_>, Vec<_>) = seeds.iter().enumerate().partition(|(i, e)| i % 2 == 0);
     let seed_spans = std::iter::zip(even, odd)
-        .map(|((_, l), (_, r))| l..(l + r))
+        .map(|((_, l), (_, r))| (l.clone(), l + r))
         .collect::<Vec<_>>();
+    let seed_ranges = seed_spans.iter().map(|(l, r)| l..r).collect::<Vec<_>>();
 
-    mappings.reverse();
     let mut rev_mappings = Vec::new();
     for mapping in mappings {
         rev_mappings.push(RangeMapping {
@@ -92,20 +92,21 @@ pub fn solve2(input: Vec<String>) -> String {
             ),
         })
     }
+    rev_mappings.reverse();
 
-    let max_value = *seed_spans.iter().map(|r| r.end).max().unwrap();
+    let max_value = *seed_ranges.iter().map(|r| r.end).max().unwrap();
 
-    dbg!(max_value);
-    for value in 1..max_value {
-        let mut value = value;
+    // dbg!(max_value);
+    for orig_value in 1..max_value {
+        let mut value = orig_value;
         let mut debug = Vec::new();
         for mapping in &rev_mappings {
             value = mapping.get_at(value);
             debug.push(value);
         }
         // dbg!(debug);
-        if seed_spans.iter().any(|span| span.contains(&&value)) {
-            return value.to_string();
+        if seed_ranges.iter().any(|span| span.contains(&&value)) {
+            return orig_value.to_string();
         }
     }
     unreachable!()

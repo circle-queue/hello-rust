@@ -62,7 +62,7 @@ def test_d5_rust():
     assert rust_impl.d5_solve1(python_impl.d5.sample_input1) == "35"
     assert rust_impl.d5_solve2(python_impl.d5.sample_input2) == "46"
     assert rust_impl.d5_solve1(python_impl.d5.full_input1) == "88151870"
-    assert rust_impl.d5_solve2(python_impl.d5.full_input2) == "2008785"
+    assert rust_impl.d5_solve2(python_impl.d5.full_input2) == "2008785"  # slow: 5s
 
 
 def test_d5_python():
@@ -72,11 +72,11 @@ def test_d5_python():
     assert python_impl.d5.solve2(python_impl.d5.full_input2) == "2008785"  # slow: 15s
 
 
-# def test_d6_rust():
-#     assert rust_impl.d6_solve1(python_impl.d6.sample_input1) == "288"
-#     assert rust_impl.d6_solve2(python_impl.d6.sample_input2) == "71503"
-#     assert rust_impl.d6_solve1(python_impl.d6.full_input1) == "303600"
-#     assert rust_impl.d6_solve2(python_impl.d6.full_input2) == "23654842"
+def test_d6_rust():
+    assert rust_impl.d6_solve1(python_impl.d6.sample_input1) == "288"
+    assert rust_impl.d6_solve2(python_impl.d6.sample_input2) == "71503"
+    assert rust_impl.d6_solve1(python_impl.d6.full_input1) == "303600"
+    assert rust_impl.d6_solve2(python_impl.d6.full_input2) == "23654842"
 
 
 def test_d6_python():
@@ -86,11 +86,11 @@ def test_d6_python():
     assert python_impl.d6.solve2(python_impl.d6.full_input2) == "23654842"  # slow: 1.5s
 
 
-# def test_d7_rust():
-#     assert rust_impl.d7_solve1(python_impl.d7.sample_input1) == "6440"
-#     assert rust_impl.d7_solve2(python_impl.d7.sample_input2) == "5905"
-#     assert rust_impl.d7_solve1(python_impl.d7.full_input1) == "253954294"
-#     assert rust_impl.d7_solve2(python_impl.d7.full_input2) == "254837398"
+def test_d7_rust():
+    assert rust_impl.d7_solve1(python_impl.d7.sample_input1) == "6440"
+    assert rust_impl.d7_solve2(python_impl.d7.sample_input2) == "5905"
+    assert rust_impl.d7_solve1(python_impl.d7.full_input1) == "253954294"
+    assert rust_impl.d7_solve2(python_impl.d7.full_input2) == "254837398"
 
 
 def test_d7_python():
@@ -100,11 +100,11 @@ def test_d7_python():
     assert python_impl.d7.solve2(python_impl.d7.full_input2) == "254837398"
 
 
-# # def test_d8_rust():
-# #     assert rust_impl.d8_solve1(python_impl.d8.sample_input1) == "2"
-# #     assert rust_impl.d8_solve2(python_impl.d8.sample_input2) == "6"
-# #     assert rust_impl.d8_solve1(python_impl.d8.full_input1) == "14681"
-# #     assert rust_impl.d8_solve2(python_impl.d8.full_input2) == "14321394058031"
+def test_d8_rust():
+    assert rust_impl.d8_solve1(python_impl.d8.sample_input1) == "2"
+    assert rust_impl.d8_solve2(python_impl.d8.sample_input2) == "6"
+    assert rust_impl.d8_solve1(python_impl.d8.full_input1) == "14681"
+    assert rust_impl.d8_solve2(python_impl.d8.full_input2) == "14321394058031"
 
 
 def test_d8_python():
